@@ -2,8 +2,9 @@ import "dotenv/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@openzeppelin/hardhat-upgrades";
 import "hardhat-dependency-compiler";
+import "./tasks/index";
 
-import {HardhatUserConfig} from "hardhat/config";
+import { HardhatUserConfig } from "hardhat/config";
 
 const DEFAULT_MNEMONIC = "test test test test test test test test test test test junk";
 
@@ -242,6 +243,12 @@ const config: HardhatUserConfig = {
                 count: 20,
             },
         },
+        bscTestnet: {
+            url: "https://bsc-testnet.nodereal.io/v1/f9d5b1c95a0048aebef10bcf794eb837",
+            chainId: 97,
+            accounts: [`0x${process.env.PRIVATE_KEY}`],
+            // gasPrice: 5000000000,
+        }
     },
     gasReporter: {
         enabled: !!process.env.REPORT_GAS,

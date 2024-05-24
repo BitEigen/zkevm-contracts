@@ -1,0 +1,32 @@
+PrivateKey = {Path = "/pk/dac-member.keystore", Password = "testonly"}
+
+[L1]
+WsURL = "wss://bsc-testnet.nodereal.io/ws/v1/f9d5b1c95a0048aebef10bcf794eb837"
+RpcURL = "https://bsc-testnet.nodereal.io/v1/f9d5b1c95a0048aebef10bcf794eb837"
+PolygonValidiumAddress = "0x298bd09D8D32b9B73C1b6e93ea7b001B28c64ec7"
+DataCommitteeAddress = "0x1b625d3828e84e31308c4fae335921fc5d407a69"
+Timeout = "3m"
+RetryPeriod = "5s"
+BlockBatchSize = "32"
+GenesisBlock = "40572095"
+
+[Log]
+Environment = "development" # "production" or "development"
+Level = "debug"
+Outputs = ["stderr"]
+
+[DB]
+User = "committee_user"
+Password = "committee_password"
+Name = "committee_db"
+Host = "zkevm-data-node-db"
+Port = "5432"
+EnableLog = false
+MaxConns = 200
+
+[RPC]
+Host = "0.0.0.0"
+Port = 8444
+ReadTimeout = "60s"
+WriteTimeout = "60s"
+MaxRequestsPerIPAndSecond = 500
