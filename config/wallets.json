@@ -1,1 +1,27 @@
-[]
+[
+ {
+  "name": "Deployment Address",
+  "address": "0x9AD546dF2fCe7C6E4B8a75ADA055Ffd5cDf5D70A",
+  "keystore": "{\"address\":\"9ad546df2fce7c6e4b8a75ada055ffd5cdf5d70a\",\"id\":\"c115c0b2-1967-4983-996c-cdbc6d7c8100\",\"version\":3,\"Crypto\":{\"cipher\":\"aes-128-ctr\",\"cipherparams\":{\"iv\":\"2eeb29944f97cd9d7325428efb29d123\"},\"ciphertext\":\"c4207f501fd929e818f82c4999b9b9722bce72e2a102d234229f511927e23d4b\",\"kdf\":\"scrypt\",\"kdfparams\":{\"salt\":\"87dd4b51a1512c10bfef2625f7f7ff5c458117b2b3b0b17a076c64848149604c\",\"n\":131072,\"dklen\":32,\"p\":1,\"r\":8},\"mac\":\"cb54202379e852e100b95ff570e6ef631c522277359f3a78b04e975739dd4a54\"}}"
+ },
+ {
+  "name": "Trusted sequencer",
+  "address": "0x4fA2fef1993cAb0007f269bd924d2a12fb3b31A0",
+  "keystore": "{\"address\":\"4fa2fef1993cab0007f269bd924d2a12fb3b31a0\",\"id\":\"b699a1a8-0eac-4ffe-8c32-beeb0f682c37\",\"version\":3,\"Crypto\":{\"cipher\":\"aes-128-ctr\",\"cipherparams\":{\"iv\":\"b98e889d6ccea1be4fcb85151fa4395c\"},\"ciphertext\":\"2ae8e0aa773b778df85fadc9ab3f73456856b8c59f477677a9e774ba6710a3a0\",\"kdf\":\"scrypt\",\"kdfparams\":{\"salt\":\"7e8d03c7d39d7dc4b0531bc279553b887f83cafc41e6a66ae2b369980acf48c3\",\"n\":131072,\"dklen\":32,\"p\":1,\"r\":8},\"mac\":\"70ca971919890e43c5ae6625a8a9edeaa88e0f3e06e33140a41abe1c994814f6\"}}"
+ },
+ {
+  "name": "Trusted aggregator",
+  "address": "0x8Af3D8B398d43BED74B717ae3eAf11f4C44bb80e",
+  "keystore": "{\"address\":\"8af3d8b398d43bed74b717ae3eaf11f4c44bb80e\",\"id\":\"9079a1bd-ff98-41db-a661-59d599f67adf\",\"version\":3,\"Crypto\":{\"cipher\":\"aes-128-ctr\",\"cipherparams\":{\"iv\":\"fc197d402788dd810032a4657cd1c0b2\"},\"ciphertext\":\"17a943c796b06fbe30732d0867db9971eb9c8f3c3c3a970ea9a119fda3fcc016\",\"kdf\":\"scrypt\",\"kdfparams\":{\"salt\":\"775e1518a7571996edb63c7e59a1ad0f45bbf37b0b7e3438c13e6c4b7c1e4a49\",\"n\":131072,\"dklen\":32,\"p\":1,\"r\":8},\"mac\":\"7a6439d3c4e2711d938291fd3580d435bf20598506920d318c3f9ddb7f85da9a\"}}"
+ },
+ {
+  "name": "DAC member",
+  "address": "0x8Af3D8B398d43BED74B717ae3eAf11f4C44bb80e",
+  "keystore": "{\"address\":\"8af3d8b398d43bed74b717ae3eaf11f4c44bb80e\",\"id\":\"9079a1bd-ff98-41db-a661-59d599f67adf\",\"version\":3,\"Crypto\":{\"cipher\":\"aes-128-ctr\",\"cipherparams\":{\"iv\":\"fc197d402788dd810032a4657cd1c0b2\"},\"ciphertext\":\"17a943c796b06fbe30732d0867db9971eb9c8f3c3c3a970ea9a119fda3fcc016\",\"kdf\":\"scrypt\",\"kdfparams\":{\"salt\":\"775e1518a7571996edb63c7e59a1ad0f45bbf37b0b7e3438c13e6c4b7c1e4a49\",\"n\":131072,\"dklen\":32,\"p\":1,\"r\":8},\"mac\":\"7a6439d3c4e2711d938291fd3580d435bf20598506920d318c3f9ddb7f85da9a\"}}"
+ },
+ {
+  "name": "Claim tx manager",
+  "address": "0x4fA2fef1993cAb0007f269bd924d2a12fb3b31A0",
+  "keystore": "{\"address\":\"4fa2fef1993cab0007f269bd924d2a12fb3b31a0\",\"id\":\"b699a1a8-0eac-4ffe-8c32-beeb0f682c37\",\"version\":3,\"Crypto\":{\"cipher\":\"aes-128-ctr\",\"cipherparams\":{\"iv\":\"b98e889d6ccea1be4fcb85151fa4395c\"},\"ciphertext\":\"2ae8e0aa773b778df85fadc9ab3f73456856b8c59f477677a9e774ba6710a3a0\",\"kdf\":\"scrypt\",\"kdfparams\":{\"salt\":\"7e8d03c7d39d7dc4b0531bc279553b887f83cafc41e6a66ae2b369980acf48c3\",\"n\":131072,\"dklen\":32,\"p\":1,\"r\":8},\"mac\":\"70ca971919890e43c5ae6625a8a9edeaa88e0f3e06e33140a41abe1c994814f6\"}}"
+ }
+]

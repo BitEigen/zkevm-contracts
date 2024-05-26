@@ -2,6 +2,4 @@
 
 set -xeuo
 
-nginx -g 'daemon off;' &
-
 geth "$@"

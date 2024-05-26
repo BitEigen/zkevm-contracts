@@ -3,12 +3,12 @@ PrivateKey = {Path = "/pk/dac-member.keystore", Password = "testonly"}
 [L1]
 WsURL = "ws://zkevm-mock-l1-network:8546"
 RpcURL = "http://zkevm-mock-l1-network:8545"
-PolygonValidiumAddress = "0xFBeD37AB506d95AF29593B7263D06d30139BB19A"
+PolygonValidiumAddress = "0x831612b8d9F116b7E4E820B6B33FD46299945b31"
 DataCommitteeAddress = "0xa10FCdf3181C872754702272841cD78Efb86f016"
 Timeout = "3m"
 RetryPeriod = "5s"
 BlockBatchSize = "32"
-GenesisBlock = "87"
+GenesisBlock = "59"
 
 [Log]
 Environment = "development" # "production" or "development"
