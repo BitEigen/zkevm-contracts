@@ -1,5 +1,5 @@
 [Log]
-Level = "debug"
+Level = "info"
 Outputs = ["stdout"]
 
 [SyncDB]
@@ -17,10 +17,10 @@ FrequencyToMonitorTxs = "1s"
 PrivateKey = {Path = "/pk/keystore.claimtxmanager", Password = "testonly"}
 RetryInterval = "1s"
 RetryNumber = 10
-AuthorizedClaimMessageAddresses = ["0x90F79bf6EB2c4f870365E785982E1f101E93b906"]
+AuthorizedClaimMessageAddresses = ["0x4fA2fef1993cAb0007f269bd924d2a12fb3b31A0"]
 
 [Etherman]
-L1URL = "https://bsc-testnet.nodereal.io/v1/f9d5b1c95a0048aebef10bcf794eb837"
+L1URL = "http://zkevm-mock-l1-network:8545"
 L2URLs = ["http://zkevm-json-rpc:8123"]
 
 [Synchronizer]
@@ -48,9 +48,9 @@ BridgeVersion = "v1"
     MaxConns = 20
 
 [NetworkConfig]
-GenBlockNumber = 40572095
-PolygonBridgeAddress = "0x618D9f1799970Cc6F92BBD4905c22cA889d6ADDF"
-PolygonZkEVMGlobalExitRootAddress = "0x262b0f9c9608d3B4f15FfA8509A76a838167a946"
-PolygonRollupManagerAddress = "0x7Bea34575BBBcFC092fe85c68ee7696a33b3f3a0"
-PolygonZkEvmAddress = "0x298bd09D8D32b9B73C1b6e93ea7b001B28c64ec7"
-L2PolygonBridgeAddresses = ["0x618D9f1799970Cc6F92BBD4905c22cA889d6ADDF"]
+GenBlockNumber = 87
+PolygonBridgeAddress = "0xDa8931d13324f04305952fE9e521456E5de69e74"
+PolygonZkEVMGlobalExitRootAddress = "0x797a1b3D008d9751C66cF15154C349A58b96a78A"
+PolygonRollupManagerAddress = "0x4217264E26C865ada243D7FA564a36A3E440481a"
+PolygonZkEvmAddress = "0xFBeD37AB506d95AF29593B7263D06d30139BB19A"
+L2PolygonBridgeAddresses = ["0xDa8931d13324f04305952fE9e521456E5de69e74"]

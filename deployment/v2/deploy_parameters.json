@@ -9,7 +9,7 @@
  "trustedAggregatorTimeout": 604799,
  "pendingStateTimeout": 604799,
  "emergencyCouncilAddress": "0x9AD546dF2fCe7C6E4B8a75ADA055Ffd5cDf5D70A",
- "polTokenAddress": "0x8a05cbA96282a894812071Ae9da49D448ea0C99b",
+ "polTokenAddress": "0xeAf5d317B7c5d112ed38DAaa5d01BFBfB45D7a2d",
  "zkEVMDeployerAddress": "0xF2578952756791559b0Ee7E53c382a5ae225DDDc",
  "deployerPvtKey": "0x4fd8707f8690869f2df8dd35dc763d54cfd3a80fc373aecd1223bc823f4e3957",
  "maxFeePerGas": "",

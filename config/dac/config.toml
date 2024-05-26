@@ -1,14 +1,14 @@
 PrivateKey = {Path = "/pk/dac-member.keystore", Password = "testonly"}
 
 [L1]
-WsURL = "wss://bsc-testnet.nodereal.io/ws/v1/f9d5b1c95a0048aebef10bcf794eb837"
-RpcURL = "https://bsc-testnet.nodereal.io/v1/f9d5b1c95a0048aebef10bcf794eb837"
-PolygonValidiumAddress = "0x298bd09D8D32b9B73C1b6e93ea7b001B28c64ec7"
-DataCommitteeAddress = "0x1b625d3828e84e31308c4fae335921fc5d407a69"
+WsURL = "ws://zkevm-mock-l1-network:8546"
+RpcURL = "http://zkevm-mock-l1-network:8545"
+PolygonValidiumAddress = "0xFBeD37AB506d95AF29593B7263D06d30139BB19A"
+DataCommitteeAddress = "0xa10FCdf3181C872754702272841cD78Efb86f016"
 Timeout = "3m"
 RetryPeriod = "5s"
 BlockBatchSize = "32"
-GenesisBlock = "40572095"
+GenesisBlock = "87"
 
 [Log]
 Environment = "development" # "production" or "development"

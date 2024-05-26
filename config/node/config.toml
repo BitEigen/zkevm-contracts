@@ -2,7 +2,7 @@ IsTrustedSequencer = true
 
 [Log]
 Environment = "development" # "production" or "development"
-Level = "debug"
+Level = "warn"
 Outputs = ["stderr"]
 
 [State]
@@ -60,7 +60,7 @@ GlobalQueue = 1024
 	MaxConns = 200
 
 [Etherman]
-URL = "https://bsc-testnet.nodereal.io/v1/f9d5b1c95a0048aebef10bcf794eb837"
+URL = "http://zkevm-mock-l1-network:8545"
 ForkIDChunkSize = 20000
 MultiGasProvider = false
 	[Etherscan]
@@ -125,8 +125,8 @@ StateConsistencyCheckInterval = "5s"
 		Port = 6900
 		Filename = "/datastreamer/datastream.bin"
 		Version = 1
-		ChainID = 97
-		Enabled = true
+		ChainID = 33
+		Enabled = false
 
 [SequenceSender]
 WaitPeriodSendSequence = "15s"

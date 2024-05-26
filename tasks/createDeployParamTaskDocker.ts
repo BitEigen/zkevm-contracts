@@ -6,7 +6,7 @@ import deployParams from "../docker/scripts/v2/deploy_parameters_docker.json";
 import createRollupParams from "../docker/scripts/v2/create_rollup_parameters_docker.json";
 
 /**
-  * Usage: npx hardhat createDeployParamTask --chainid <chainid>
+  * Usage: npx hardhat createDeployParamTaskDocker --chainid <chainid>
   *
   */
 

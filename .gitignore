@@ -22,5 +22,5 @@ typechain-types/
 # create_rollup_parameters.json
 
 docker/deploymentOutput
-wallets.json
 *.keystore
+docker/rsk/

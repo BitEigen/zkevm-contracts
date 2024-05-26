@@ -248,6 +248,11 @@ const config: HardhatUserConfig = {
             chainId: 97,
             accounts: [`0x${process.env.PRIVATE_KEY}`],
             // gasPrice: 5000000000,
+        },
+        rskLocal: {
+            url: "http://127.0.0.1:8545",
+            chainId: 33,
+            accounts: [`0x${process.env.PRIVATE_KEY}`],
         }
     },
     gasReporter: {
