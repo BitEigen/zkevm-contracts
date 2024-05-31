@@ -31,8 +31,9 @@ async function createDeployParamTask(taskArgs: { chainid: string }, hre: Hardhat
   createRollupParams.adminZkEVM = deployer.address;
   // validium contract
   createRollupParams.consensusContract = "PolygonValidiumEtrog"
-  createRollupParams.forkID = 9;
+  createRollupParams.forkID = 8;
   createRollupParams.chainID = parseInt(taskArgs.chainid);
+  createRollupParams.dataAvailabilityProtocol = "Celestia";
 
   fs.writeFileSync(path.join(__dirname, '../deployment/v2/deploy_parameters.json'), JSON.stringify(deployParams, null, 1));
   fs.writeFileSync(path.join(__dirname, '../deployment/v2/create_rollup_parameters.json'), JSON.stringify(createRollupParams, null, 1));

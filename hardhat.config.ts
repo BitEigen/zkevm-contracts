@@ -264,6 +264,8 @@ const config: HardhatUserConfig = {
             sepolia: `${process.env.ETHERSCAN_API_KEY}`,
             mainnet: `${process.env.ETHERSCAN_API_KEY}`,
             zkevmDevnet: `${process.env.ETHERSCAN_API_KEY}`,
+            bscTestnet: "SJ5HMUVFDWXVKC8ZUACG3KR5VSHWUBWJWE",
+            localhost: `${process.env.LOCALHOST}`
         },
         customChains: [
             {
@@ -288,6 +290,14 @@ const config: HardhatUserConfig = {
                 urls: {
                     apiURL: "http://123:123:123:123:123/api",
                     browserURL: "http://123:123:123:123:123",
+                },
+            },
+            {
+                network: "localhost",
+                chainId: 1337,
+                urls: {
+                    apiURL: "http://192.168.1.49:81/api",
+                    browserURL: "http://192.168.1.49:81",
                 },
             },
         ],

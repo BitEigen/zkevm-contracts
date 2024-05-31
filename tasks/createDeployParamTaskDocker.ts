@@ -31,7 +31,7 @@ async function createDeployParamTaskDocker(taskArgs: { chainid: string }, hre: H
   createRollupParams.adminZkEVM = deployer.address;
   // validium contract
   createRollupParams.consensusContract = "PolygonValidiumEtrog"
-  createRollupParams.forkID = 9;
+  createRollupParams.forkID = 8;
   createRollupParams.chainID = parseInt(taskArgs.chainid);
 
   fs.writeFileSync(path.join(__dirname, '../docker/scripts/v2/deploy_parameters_docker.json'), JSON.stringify(deployParams, null, 1));

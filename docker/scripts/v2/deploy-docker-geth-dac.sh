@@ -22,7 +22,7 @@ sudo rm -rf docker/deploymentOutput
 mkdir docker/deploymentOutput
 mkdir docker/gethData
 
-npx hardhat generateWallets
+# npx hardhat generateWallets
 
 DEV_PERIOD=1 docker-compose -f docker/docker-compose.yml up -d geth
 sleep 5

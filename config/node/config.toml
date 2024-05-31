@@ -133,7 +133,7 @@ WaitPeriodSendSequence = "15s"
 LastBatchVirtualizationTimeMaxWaitPeriod = "10s"
 L1BlockTimestampMargin = "5s"
 MaxTxSizeForL1 = 131072
-L2Coinbase = "0x4fA2fef1993cAb0007f269bd924d2a12fb3b31A0"
+L2Coinbase = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 PrivateKey = {Path = "/pk/sequencer.keystore", Password = "testonly"}
 	[SequenceSender.StreamClient]
 		Server = "zkevm-sequencer:6900"
@@ -146,7 +146,7 @@ VerifyProofInterval = "10s"
 TxProfitabilityCheckerType = "acceptall"
 TxProfitabilityMinReward = "1.1"
 ProofStatePollingInterval = "5s"
-SenderAddress = "0x8Af3D8B398d43BED74B717ae3eAf11f4C44bb80e"
+SenderAddress = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
 CleanupLockedProofsInterval = "2m"
 GeneratingProofCleanupThreshold = "10m"
 UpgradeEtrogBatchNumber = 0

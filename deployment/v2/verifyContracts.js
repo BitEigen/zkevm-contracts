@@ -15,11 +15,15 @@ const pathCreateRollupOutput = path.join(__dirname, './create_rollup_output.json
 
 const createRollupOutputParameters = require(pathCreateRollupOutput);
 
+const pathCreateRollupParams = path.join(__dirname, './create_rollup_parameters.json');
+
+const createRollupParameters = require(pathCreateRollupParams);
+
 async function main() {
     // load deployer account
-    if (typeof process.env.ETHERSCAN_API_KEY === 'undefined') {
-        throw new Error('Etherscan API KEY has not been defined');
-    }
+    // if (typeof process.env.ETHERSCAN_API_KEY === 'undefined') {
+    //     throw new Error('Etherscan API KEY has not been defined');
+    // }
 
     // verify maticToken
     const polTokenName = 'Pol Token';
@@ -56,11 +60,12 @@ async function main() {
                     [timelockAdminAddress],
                     [timelockAdminAddress],
                     timelockAdminAddress,
-                    deployOutputParameters.polygonRollupManager,
+                    deployOutputParameters.polygonRollupManagerAddress,
                 ],
             },
         );
     } catch (error) {
+        console.error(`contract: ${deployOutputParameters.timelockContractAddress}, mess: ${error.message}`);
         expect(error.message.toLowerCase().includes('already verified')).to.be.equal(true);
     }
 
@@ -73,6 +78,7 @@ async function main() {
             },
         );
     } catch (error) {
+        console.error(`contract: ${deployOutputParameters.proxyAdminAddress}, mess: ${error.message}`);
         expect(error.message.toLowerCase().includes('already verified')).to.be.equal(true);
     }
 
@@ -81,7 +87,7 @@ async function main() {
         await hre.run(
             'verify:verify',
             {
-                address: deployOutputParameters.polygonRollupManager,
+                address: deployOutputParameters.polygonRollupManagerAddress,
                 constructorArguments: [
                     deployOutputParameters.polygonZkEVMGlobalExitRootAddress,
                     deployOutputParameters.polTokenAddress,
@@ -100,7 +106,7 @@ async function main() {
             {
                 address: deployOutputParameters.polygonZkEVMGlobalExitRootAddress,
                 constructorArguments: [
-                    deployOutputParameters.polygonRollupManager,
+                    deployOutputParameters.polygonRollupManagerAddress,
                     deployOutputParameters.polygonZkEVMBridgeAddress,
                 ],
             },
@@ -163,7 +169,8 @@ async function main() {
             },
         );
     } catch (error) {
-        expect(error.message.toLowerCase().includes('already verified')).to.be.equal(true);
+        console.error(`contract: ${createRollupOutputParameters.verifierAddress}, mess: ${error.message}`);
+        // expect(error.message.toLowerCase().includes('already verified')).to.be.equal(true);
     }
 
     // verify zkEVM address or validium
@@ -179,7 +186,7 @@ async function main() {
                         deployOutputParameters.polygonZkEVMGlobalExitRootAddress,
                         deployOutputParameters.polTokenAddress,
                         deployOutputParameters.polygonZkEVMBridgeAddress,
-                        deployOutputParameters.polygonRollupManager,
+                        deployOutputParameters.polygonRollupManagerAddress,
                     ],
                 },
             );
@@ -197,12 +204,38 @@ async function main() {
                         deployOutputParameters.polygonZkEVMGlobalExitRootAddress,
                         deployOutputParameters.polTokenAddress,
                         deployOutputParameters.polygonZkEVMBridgeAddress,
-                        deployOutputParameters.polygonRollupManager,
+                        deployOutputParameters.polygonRollupManagerAddress,
                     ],
                 },
             );
         } catch (error) {
             // expect(error.message.toLowerCase().includes('proxyadmin')).to.be.equal(true);
+        }
+        if (createRollupParameters.dataAvailabilityProtocol === 'Celestia') { 
+            try {
+                await hre.run(
+                    'verify:verify',
+                    {
+                        contract: 'contracts/v2/consensus/validium/Celestia.sol:Celestia',
+                        address: createRollupOutputParameters.polygonDataCommitteeAddress,
+                    },
+                );
+            } catch (error) {
+                console.log("Cannot verify PolygonDataCommittee.sol: ", error);
+            }
+        }
+        else {
+            try {
+                await hre.run(
+                    'verify:verify',
+                    {
+                        contract: 'contracts/v2/consensus/validium/PolygonDataCommittee.sol:PolygonDataCommittee',
+                        address: createRollupOutputParameters.polygonDataCommitteeAddress,
+                    },
+                );
+            } catch (error) {
+                console.log("Cannot verify PolygonDataCommittee.sol: ", error);
+            }
         }
     }
 }
