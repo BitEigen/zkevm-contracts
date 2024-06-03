@@ -23,12 +23,13 @@ import {ethers, upgrades} from "hardhat";
 import {MemDB, ZkEVMDB, getPoseidon, smtUtils} from "@0xpolygonhermez/zkevm-commonjs";
 
 import {deployPolygonZkEVMDeployer, create2Deployment, getCreate2Address} from "../helpers/deployment-helpers";
-import {ProxyAdmin} from "../../typechain-types";
+import {PolygonZkEVMBridgeV2, ProxyAdmin} from "../../typechain-types";
 import {Addressable} from "ethers";
 
 import "../helpers/utils";
 
 const deployParameters = require(argv.input);
+const deployParametersPath = path.join(__dirname, argv.input);
 const pathOutputJson = path.join(__dirname, argv.out);
 
 /*
@@ -86,6 +87,8 @@ async function main() {
     let finalKeylessDeployer;
     let finalDeployer;
 
+    let polTokenAddress;
+
     const genesis = [];
 
     // Check if it's mainnet deployment
@@ -112,6 +115,7 @@ async function main() {
             "minDelayTimelock",
             "salt",
             "initialZkEVMDeployerOwner",
+            "polTokenAddress",
         ];
 
         for (const parameterName of mandatoryDeploymentParameters) {
@@ -119,7 +123,7 @@ async function main() {
                 throw new Error(`Missing parameter: ${parameterName}`);
             }
         }
-        ({timelockAdminAddress, minDelayTimelock, salt, initialZkEVMDeployerOwner} = deployParameters);
+        ({timelockAdminAddress, minDelayTimelock, salt, initialZkEVMDeployerOwner, polTokenAddress} = deployParameters);
     }
 
     // Load deployer
@@ -198,11 +202,27 @@ async function main() {
         )
     ).data;
 
+    const networkIDL2 = 1;
+    const gasTokenAddress = polTokenAddress;
+    const gasTokenNetwork = 0;
+    // const gasTokenMetadata =
+    //     "0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000009506f6c20546f6b656e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003504f4c0000000000000000000000000000000000000000000000000000000000";
+    const gasTokenMetadata = "0x";
+    const rollupManager = ethers.ZeroAddress;
+    const dataCallProxy = polygonZkEVMBridgeFactory.interface.encodeFunctionData("initialize", [
+        networkIDL2,
+        gasTokenAddress,
+        gasTokenNetwork,
+        globalExitRootL2Address,
+        rollupManager,
+        gasTokenMetadata,
+    ]);
+
     [proxyBridgeAddress] = await create2Deployment(
         zkEVMDeployerContract,
         salt,
         deployTransactionProxy,
-        null,
+        dataCallProxy,
         deployer,
         null
     );
@@ -213,6 +233,9 @@ async function main() {
 
     // Import OZ manifest the deployed contracts, its enough to import just the proyx, the rest are imported automatically ( admin/impl)
     await upgrades.forceImport(proxyBridgeAddress as string, polygonZkEVMBridgeFactory, "transparent" as any);
+
+    const proxyBridgeContract = polygonZkEVMBridgeFactory.attach(proxyBridgeAddress as string) as PolygonZkEVMBridgeV2;
+    deployParameters["wethAddress"] = await proxyBridgeContract.WETHToken();
 
     /*
      *Deployment Global exit root manager
@@ -312,6 +335,17 @@ async function main() {
         address: finalBridgeProxyAddress,
         bytecode: bridgeProxyInfo.bytecode,
         storage: bridgeProxyInfo.storage,
+    });
+
+    // WETH
+    const wethInfo = await getAddressInfo(deployParameters["wethAddress"] as string);
+    genesis.push({
+        contractName: "WETH",
+        balance: "0",
+        nonce: wethInfo.nonce.toString(),
+        address: deployParameters["wethAddress"] as string,
+        bytecode: wethInfo.bytecode,
+        storage: wethInfo.storage,
     });
 
     // polygonZkEVMGlobalExitRootL2 implementation
@@ -457,6 +491,7 @@ async function main() {
             1
         )
     );
+    fs.writeFileSync(deployParametersPath, JSON.stringify(deployParameters, null, 1));
 }
 
 main().catch((e) => {
