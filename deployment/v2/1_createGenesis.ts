@@ -238,6 +238,24 @@ async function main() {
     deployParameters["wethAddress"] = await proxyBridgeContract.WETHToken();
 
     /*
+     *Deployment Zkevm NFT Bridge
+     */
+
+    const polygonZkEVMNFTBridgeFactory = await ethers.getContractFactory("ZkEVMNFTBridge", deployer);
+    const deployTransactionNFTBridge = (
+        await polygonZkEVMNFTBridgeFactory.getDeployTransaction(proxyBridgeAddress as string)
+    ).data;
+    // Mandatory to override the gasLimit since the estimation with create are mess up D:
+    const [nftBridgeAddress] = await create2Deployment(
+        zkEVMDeployerContract,
+        salt,
+        deployTransactionNFTBridge,
+        null,
+        deployer,
+        null
+    );
+
+    /*
      *Deployment Global exit root manager
      */
     const PolygonZkEVMGlobalExitRootL2Factory = await ethers.getContractFactory(
@@ -346,6 +364,17 @@ async function main() {
         address: deployParameters["wethAddress"] as string,
         bytecode: wethInfo.bytecode,
         storage: wethInfo.storage,
+    });
+
+    // NFT Bridge
+    const nftBridgeInfo = await getAddressInfo(nftBridgeAddress as string);
+    genesis.push({
+        contractName: "ZkEVMNFTBridge",
+        balance: "0",
+        nonce: nftBridgeInfo.nonce.toString(),
+        address: nftBridgeAddress as string,
+        bytecode: nftBridgeInfo.bytecode,
+        storage: nftBridgeInfo.storage,
     });
 
     // polygonZkEVMGlobalExitRootL2 implementation

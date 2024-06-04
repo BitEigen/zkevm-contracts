@@ -125,6 +125,15 @@ async function main() {
 
     try {
         await hre.run('verify:verify', {
+            address: deployOutputParameters.nftBridgeAddress,
+            constructorArguments: [deployOutputParameters.polygonZkEVMBridgeAddress],
+        });
+    } catch (error) {
+        expect(error.message.toLowerCase().includes('already verified')).to.be.equal(true);
+    }
+
+    try {
+        await hre.run('verify:verify', {
             contract: 'contracts/v2/lib/PolygonTransparentProxy.sol:PolygonTransparentProxy',
             address: createRollupOutputParameters.rollupAddress,
             constructorArguments: [
@@ -178,14 +187,16 @@ async function main() {
         } catch (error) {
             expect(error.message.toLowerCase().includes('proxyadmin')).to.be.equal(true);
         }
-        // try {
-        //     await hre.run('verify:verify', {
-        //         contract: 'contracts/v2/consensus/validium/PolygonDataCommittee.sol:PolygonDataCommittee',
-        //         address: createRollupOutputParameters.polygonDataCommitteeAddress,
-        //     });
-        // } catch (error) {
-        //     console.log('Cannot verify PolygonDataCommittee.sol: ', error);
-        // }
+        /*
+         * try {
+         *     await hre.run('verify:verify', {
+         *         contract: 'contracts/v2/consensus/validium/PolygonDataCommittee.sol:PolygonDataCommittee',
+         *         address: createRollupOutputParameters.polygonDataCommitteeAddress,
+         *     });
+         * } catch (error) {
+         *     console.log('Cannot verify PolygonDataCommittee.sol: ', error);
+         * }
+         */
     }
 }
 

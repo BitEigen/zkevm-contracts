@@ -339,6 +339,28 @@ async function main() {
     // Import OZ manifest the deployed contracts, its enough to import just the proxy, the rest are imported automatically (admin/impl)
     await upgrades.forceImport(proxyBridgeAddress, polygonZkEVMBridgeFactory, "transparent" as any);
 
+    // Deploy ZkEVMNFTBridge
+    const polygonZkEVMNFTBridgeFactory = await ethers.getContractFactory("ZkEVMNFTBridge", deployer);
+    const deployTransactionNFTBridge = (await polygonZkEVMNFTBridgeFactory.getDeployTransaction(proxyBridgeAddress))
+        .data;
+    // Mandatory to override the gasLimit since the estimation with create are mess up D:
+    const [nftBridgeAddress, isNFTBridgeDeployed] = await create2Deployment(
+        zkEVMDeployerContract,
+        salt,
+        deployTransactionNFTBridge,
+        null,
+        deployer,
+        null
+    );
+
+    if (isNFTBridgeDeployed) {
+        console.log("#######################\n");
+        console.log("ZkEVMNFTBridge deployed to:", nftBridgeAddress);
+    } else {
+        console.log("#######################\n");
+        console.log("ZkEVMNFTBridge was already deployed to:", nftBridgeAddress);
+    }
+
     /*
      *Deployment Global exit root manager
      */
@@ -406,6 +428,7 @@ async function main() {
     console.log("PolygonZkEVMGlobalExitRootAddress:", polygonZkEVMGlobalExitRoot?.target);
     console.log("polTokenAddress:", polTokenAddress);
     console.log("polygonZkEVMBridgeContract:", polygonZkEVMBridgeContract.target);
+    console.log("polygonZkEVMNFTBridgeContract:", nftBridgeAddress);
 
     console.log("trustedAggregator:", trustedAggregator);
     console.log("pendingStateTimeout:", pendingStateTimeout);
@@ -548,6 +571,7 @@ async function main() {
         trustedAggregator,
         proxyAdminAddress,
         salt,
+        nftBridgeAddress,
     };
     fs.writeFileSync(pathOutputJson, JSON.stringify(outputJson, null, 1));
 

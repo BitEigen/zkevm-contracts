@@ -156,6 +156,16 @@ function updateBridgeConfigToml(l1RpcUrl: string, configTomlPath: string) {
         );
     }
 
+    // Find the address for "ZkEVMNFTBridge" in genesis.config.json
+    const nftBridge = genesisOutput.genesis.find((item) => item.contractName === "ZkEVMNFTBridge");
+    if (nftBridge) {
+        // Update AuthorizedClaimMessageAddresses
+        configContent = configContent.replace(
+            /(AuthorizedClaimMessageAddresses\s*=\s*)\[".*"\]/,
+            `$1["${nftBridge.address}"]`
+        );
+    }
+
     fs.writeFileSync(configTomlPath, configContent, "utf8");
 }
 
