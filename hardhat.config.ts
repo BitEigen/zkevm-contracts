@@ -199,7 +199,7 @@ const config: HardhatUserConfig = {
             url: "https://rpc-1.biteigen.xyz",
             chainId: 1011,
             accounts: [`0x${privateKey}`],
-        }
+        },
     },
     gasReporter: {
         enabled: !!process.env.REPORT_GAS,
@@ -251,7 +251,7 @@ const config: HardhatUserConfig = {
                 network: "biteigen",
                 chainId: 1011,
                 urls: {
-                    apiURL: "https://explorer-1.biteigen.xyz/api",
+                    apiURL: "https://api-1.biteigen.xyz/api",
                     browserURL: "https://explorer-1.biteigen.xyz/",
                 },
             },
