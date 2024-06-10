@@ -198,7 +198,6 @@ const config: HardhatUserConfig = {
         },
         localhost: {
             url: "http://127.0.0.1:8545",
-            chainId: 1337,
             accounts: [`0x${process.env.PRIVATE_KEY}`],
         },
         hardhat: {
@@ -294,7 +293,7 @@ const config: HardhatUserConfig = {
             },
             {
                 network: "localhost",
-                chainId: 1337,
+                chainId: 33,
                 urls: {
                     apiURL: "http://192.168.1.49:81/api",
                     browserURL: "http://192.168.1.49:81",

@@ -10,7 +10,7 @@ import createRollupParams from "../deployment/v2/create_rollup_parameters.json";
   *
   */
 
-async function createDeployParamTask(taskArgs: { chainid: string }, hre: HardhatRuntimeEnvironment) {
+async function createDeployParamTask(taskArgs: { chainid: string, daproto: string}, hre: HardhatRuntimeEnvironment) {
   if (!process.env.SEQUENCER_PRIVATE_KEY || !process.env.AGGREGATOR_PRIVATE_KEY || !process.env.DEPLOYER_PRIVATE_KEY) {
     throw new Error('Missing private key');
   }
@@ -33,7 +33,7 @@ async function createDeployParamTask(taskArgs: { chainid: string }, hre: Hardhat
   createRollupParams.consensusContract = "PolygonValidiumEtrog"
   createRollupParams.forkID = 8;
   createRollupParams.chainID = parseInt(taskArgs.chainid);
-  createRollupParams.dataAvailabilityProtocol = "Celestia";
+  createRollupParams.dataAvailabilityProtocol = taskArgs.daproto ?? "Celestia";
 
   fs.writeFileSync(path.join(__dirname, '../deployment/v2/deploy_parameters.json'), JSON.stringify(deployParams, null, 1));
   fs.writeFileSync(path.join(__dirname, '../deployment/v2/create_rollup_parameters.json'), JSON.stringify(createRollupParams, null, 1));
@@ -41,4 +41,5 @@ async function createDeployParamTask(taskArgs: { chainid: string }, hre: Hardhat
 
 task('createDeployParamTask', 'create deploy parameters for zkSync deployment')
   .addParam("chainid", "Chain id for L2 network")
+  .addOptionalParam<string>('daproto', 'data availability protocol')
   .setAction(createDeployParamTask);

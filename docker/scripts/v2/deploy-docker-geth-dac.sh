@@ -29,7 +29,7 @@ sleep 5
 
 # fund accounts and setup deploy params
 node docker/scripts/fund-accounts-rsk.js
-npx hardhat createDeployParamTask --chainid 1011
+npx hardhat createDeployParamTask --chainid 1011 --daproto PolygonDataCommittee
 
 npm run deploy:testnet:v2:localhost
 cp deployment/v2/deploy_output.json docker/deploymentOutput/
@@ -46,4 +46,4 @@ sudo chmod -R go+rxw docker/deploymentOutput
 docker build -t biteigen/geth-zkevm-contracts:dac -f docker/Dockerfile .
 
 # update config
-npx hardhat updateConfigTask --network localhost --rpc http://zkevm-mock-l1-network:8545 --wsrpc ws://zkevm-mock-l1-network:8546
+npx hardhat updateConfigTask --network localhost --rpc http://zkevm-mock-l1-network:8545 --wsrpc ws://zkevm-mock-l1-network:8546 --chainid 1337

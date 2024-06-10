@@ -121,6 +121,7 @@
     "deploy:testnet:v2:rskLocal": "npx hardhat compile && rm -f deployment/v2/deploy_ongoing.json && npm run prepare:testnet:ZkEVM:rskLocal && npm run deploy:v2:rskLocal",
 
     "docker:contracts:rsk:dac": "./docker/scripts/v2/deploy-docker-rsk-dac.sh",
+    "docker:contracts:rsk:celestia": "./docker/scripts/v2/deploy-docker-rsk-celestia.sh",
     "docker:contracts:geth:celestia": "./docker/scripts/v2/deploy-docker-geth-celestia.sh",
     "docker:contracts:geth:dac": "./docker/scripts/v2/deploy-docker-geth-dac.sh",
     "verify:v2:local": "npx hardhat run deployment/v2/verifyContracts.js --network localhost"

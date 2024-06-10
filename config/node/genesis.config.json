@@ -90,12 +90,12 @@
   }
  ],
  "l1Config": {
-  "chainId": 1337,
-  "polygonZkEVMAddress": "0x8dAF17A20c9DBA35f005b6324F493785D239719d",
+  "chainId": 33,
+  "polygonZkEVMAddress": "0x7D4d665B37d6b098913170d3B525d6BA4e6a8aAb",
   "polygonRollupManagerAddress": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
   "polTokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
   "polygonZkEVMGlobalExitRootAddress": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318"
  },
- "rollupManagerCreationBlockNumber": 59,
- "rollupCreationBlockNumber": 64
+ "rollupManagerCreationBlockNumber": 87,
+ "rollupCreationBlockNumber": 97
 }

@@ -125,12 +125,12 @@ StateConsistencyCheckInterval = "5s"
 		Port = 6900
 		Filename = "/datastreamer/datastream.bin"
 		Version = 1
-		ChainID = 1337
+		ChainID = 33
 		Enabled = false
 
 [SequenceSender]
-WaitPeriodSendSequence = "15s"
-LastBatchVirtualizationTimeMaxWaitPeriod = "10s"
+WaitPeriodSendSequence = "600s"
+LastBatchVirtualizationTimeMaxWaitPeriod = "60s"
 L1BlockTimestampMargin = "5s"
 MaxTxSizeForL1 = 131072
 L2Coinbase = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -200,3 +200,12 @@ Host = "zkevm-state-db"
 Port = "5432"
 EnableLog = false
 MaxConns = 200
+
+[DataAvailability]
+	[DataAvailability.Celestia]
+	GasPrice = -1
+	Rpc = "ws://192.168.1.49:26658"
+	NamespaceId = "42690c204d39600fddd3"
+	AuthToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJwdWJsaWMiLCJyZWFkIiwid3JpdGUiLCJhZG1pbiJdfQ.u4v_bgVxWKf-VNMmkjZPHbgHdTr80wBWCAPibdmXMcs"
+	SequencerPrivateKey = {Path = "/pk/sequencer.keystore", Password = "testonly"}
+

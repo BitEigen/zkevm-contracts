@@ -20,13 +20,11 @@ const bridgeConfigTomlPath = path.join(__dirname, '../config/bridge/config.toml'
 const dacConfigTomlPath = path.join(__dirname, '../config/dac/config.toml');
 const nodeConfigTomlPath = path.join(__dirname, '../config/node/config.toml');
 
-async function updateConfigTask(taskArgs: { rpc: string, wsrpc: string }, hre: HardhatRuntimeEnvironment) {
-  if (!hre.network.config.chainId){
-    throw new Error("Please set chainId in network config");
-  }
+async function updateConfigTask(taskArgs: { rpc: string, wsrpc: string, chainid: string }, hre: HardhatRuntimeEnvironment) {
+  const chainId = parseInt(taskArgs.chainid)
   setKeystore();
-  updateGenesisJson(hre);
-  updateNodeConfigToml(taskArgs.rpc, hre.network.config.chainId, nodeConfigTomlPath);
+  updateGenesisJson(hre, chainId)
+  updateNodeConfigToml(taskArgs.rpc, chainId, nodeConfigTomlPath);
   updateDACConfigToml(taskArgs.rpc, taskArgs.wsrpc, dacConfigTomlPath);
   updateBridgeConfigToml(taskArgs.rpc, bridgeConfigTomlPath);
 }
@@ -60,7 +58,7 @@ function writeFileBasedOnSection(section: string, keystoreData: string) {
   console.log(`Written keystore to ${filename}`);
 }
 
-function updateGenesisJson(hre: HardhatRuntimeEnvironment) {
+function updateGenesisJson(hre: HardhatRuntimeEnvironment, chainId: number) {
   const pathOutput = path.join(__dirname, '../config/node/genesis.config.json');
 
   if (!hre.network || hre.network.name === 'hardhat') {
@@ -68,7 +66,7 @@ function updateGenesisJson(hre: HardhatRuntimeEnvironment) {
   }
 
   const l1Config = {
-    chainId: hre.network.config.chainId,
+    chainId: chainId,
     polygonZkEVMAddress: createRollupOutput.rollupAddress,
     polygonRollupManagerAddress: deployOutput.polygonRollupManagerAddress,
     polTokenAddress: deployOutput.polTokenAddress,
@@ -136,4 +134,5 @@ function updateBridgeConfigToml(l1RpcUrl: string, configTomlPath: string) {
 task('updateConfigTask', 'update config for network')
   .addParam<string>('rpc', 'L1 RPC URL')
   .addParam<string>('wsrpc', 'L1 WS RPC URL')
+  .addParam<string>('chainid', 'L1 chainId')
   .setAction(updateConfigTask);
