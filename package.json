@@ -121,6 +121,11 @@
     "saveUpgradeV2:mainnet": "mkdir -p upgrade/upgradeToV2/mainnet_$(date +%s) && cp -r upgrade/upgradeToV2/upgrade_*.json upgrade/upgradeToV2/mainnet_$(date +%s) && cp -r upgrade/upgradeToV2/deploy_*.json upgrade/upgradeToV2/mainnet_$(date +%s) && cp .openzeppelin/mainnet.json upgrade/upgradeToV2/mainnet_$(date +%s)",
     "prepare:testnet:ZkEVM:bscTestnet": "npx hardhat run deployment/testnet/prepareTestnet.ts --network bscTestnet",
     "deploy:v2:bscTestnet": "npx hardhat compile && rm -f .openzeppelin/unknown-*.json && npx ts-node deployment/v2/1_createGenesis.ts --test && npx hardhat run deployment/v2/2_deployPolygonZKEVMDeployer.ts --network bscTestnet && npx hardhat run deployment/v2/3_deployContracts.ts --network bscTestnet && npx hardhat run deployment/v2/4_createRollup.ts --network bscTestnet",
-    "deploy:testnet:v2:bscTestnet": "npx hardhat compile && rm -f deployment/v2/deploy_ongoing.json && npm run prepare:testnet:ZkEVM:bscTestnet && npm run deploy:v2:bscTestnet"
+    "deploy:testnet:v2:bscTestnet": "npx hardhat compile && rm -f deployment/v2/deploy_ongoing.json && npm run prepare:testnet:ZkEVM:bscTestnet && npm run deploy:v2:bscTestnet",
+    "docker:contracts:rsk:dac": "./docker/scripts/v2/deploy-docker-rsk-dac.sh",
+    "docker:contracts:rsk:celestia": "./docker/scripts/v2/deploy-docker-rsk-celestia.sh",
+    "docker:contracts:geth:celestia": "./docker/scripts/v2/deploy-docker-geth-celestia.sh",
+    "docker:contracts:geth:dac": "./docker/scripts/v2/deploy-docker-geth-dac.sh",
+    "verify:v2:local": "npx hardhat run deployment/v2/verifyContracts.js --network localhost"
   }
 }

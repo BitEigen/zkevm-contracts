@@ -2,9 +2,11 @@ import {task} from "hardhat/config";
 
 import axios from "axios";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import deployOutput from "../deployment/v2/deploy_output.json";
+import { loadDeployParams } from "./utils";
+import path from "path";
 
 async function claimNft(taskArgs: {tnx: string}, hre: HardhatRuntimeEnvironment) {
+    const deployOutput = await loadDeployParams(path.join(__dirname, "../deployment/v2/deploy_output.json"));
     const {nftBridgeAddress, polygonZkEVMBridgeAddress} = deployOutput;
 
     if (!nftBridgeAddress) throw new Error(`Missing nftBridgeAddress`);

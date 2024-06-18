@@ -1,0 +1,17 @@
+version: "3.3"
+services:
+    rsk:
+        image: rsksmart/rskj:ARROWHEAD-6.2.0
+        # logging: *default-logging
+        user: rsk
+        # entrypoint: "java -Dlogging.stdout=INFO -Dlogging=OFF -Dgenesis=/var/lib/rsk/genesis.json -Dkeyvalue.datasource=rocksdb -Drpc.providers.web.cors=* -Drpc.providers.web.http.bind_address=0.0.0.0 -Drpc.providers.web.http.port=8545 -Drpc.providers.web.http.hosts.0=* -cp rsk.jar co.rsk.Start --regtest"
+        environment:
+            # for rsksmart/rskj image
+            - RSKJ_SYS_PROPS=-Dlogging.stdout=INFO -Dlogging=OFF -Drpc.providers.web.http.bind_address=0.0.0.0 -Drpc.providers.web.http.port=8545 -Drpc.skipRemasc=true -Dgenesis=/var/lib/rsk/genesis.json
+            - RSKJ_OPTS=--regtest
+
+        volumes:
+            - ./rsk:/var/lib/rsk/.rsk
+            - ./rsk-genesis.json:/var/lib/rsk/genesis.json
+        ports:
+            - "8545:8545"

@@ -1,6 +1,6 @@
-import "./setCommitteeTask";
-import "./updateConfigTask";
 import "./generateWallets";
 import "./createDeployParamTask";
-import "./fundAccounts";
 import "./claimNft";
+import './setCommitteeTask';
+import './updateConfigTask';
+import './setTrustedSequencerTask'

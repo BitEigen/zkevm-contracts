@@ -74,7 +74,7 @@ async function main() {
 
     const dataAvailabilityProtocol = createRollupParameters.dataAvailabilityProtocol || "PolygonDataCommittee";
 
-    const supporteDataAvailabilityProtocols = ["PolygonDataCommittee"];
+    const supporteDataAvailabilityProtocols = ["PolygonDataCommittee", "Celestia"];
 
     if (
         consensusContract.includes("PolygonValidium") &&
@@ -257,9 +257,9 @@ async function main() {
     console.log("#######################\n");
     console.log("Created new Rollup:", newZKEVMAddress);
 
-    if (consensusContract.includes("PolygonValidium") && dataAvailabilityProtocol === "PolygonDataCommittee") {
+    if (consensusContract.includes("PolygonValidium") && supporteDataAvailabilityProtocols.includes(dataAvailabilityProtocol)) {
         // deploy data commitee
-        const PolygonDataCommitteeContract = (await ethers.getContractFactory("PolygonDataCommittee", deployer)) as any;
+        const PolygonDataCommitteeContract = (await ethers.getContractFactory(dataAvailabilityProtocol, deployer)) as any;
         let polygonDataCommittee;
 
         for (let i = 0; i < attemptsDeployProxy; i++) {
@@ -270,11 +270,11 @@ async function main() {
                 break;
             } catch (error: any) {
                 console.log(`attempt ${i}`);
-                console.log("upgrades.deployProxy of polygonDataCommittee ", error.message);
+                console.log(`upgrades.deployProxy of polygonDataCommittee-${dataAvailabilityProtocol} `, error.message);
             }
             // reach limits of attempts
             if (i + 1 === attemptsDeployProxy) {
-                throw new Error("polygonDataCommittee contract has not been deployed");
+                throw new Error(`polygonDataCommittee-${dataAvailabilityProtocol} contract has not been deployed`);
             }
         }
         await polygonDataCommittee?.waitForDeployment();
@@ -287,8 +287,9 @@ async function main() {
                 await PolygonValidiumContract.setDataAvailabilityProtocol(polygonDataCommittee?.target as any)
             ).wait();
 
-            // // Setup data commitee to 0
+            // Setup data committee to 0
             // await (await polygonDataCommittee?.setupCommittee(0, [], "0x")).wait();
+            console.log(dataAvailabilityProtocol, "deployed to:", polygonDataCommittee?.target);
         } else {
             await (await polygonDataCommittee?.transferOwnership(adminZkEVM)).wait();
         }

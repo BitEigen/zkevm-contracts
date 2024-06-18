@@ -3,7 +3,8 @@
 import {expect} from "chai";
 import {ethers} from "hardhat";
 
-const gasPriceKeylessDeployment = "100"; // 100 gweis
+// const gasPriceKeylessDeployment = "100"; // 100 gweis
+const gasPriceKeylessDeployment = "1.5"; // 1.2 gweis
 // type Signer = ethers.types.Signer;
 import {Signer} from "ethers";
 import {HardhatEthersSigner} from "@nomicfoundation/hardhat-ethers/signers";
@@ -30,6 +31,7 @@ export async function deployPolygonZkEVMDeployer(
 
     const deployTxZKEVMDeployer = (await PolgonZKEVMDeployerFactory.getDeployTransaction(deployerAddress)).data;
 
+    // const gasLimit = BigInt(1000000); // Put 1 Million, aprox 650k are necessary
     const gasLimit = BigInt(1000000); // Put 1 Million, aprox 650k are necessary
     const gasPrice = BigInt(ethers.parseUnits(gasPriceKeylessDeployment, "gwei"));
 
@@ -49,7 +51,8 @@ export async function deployPolygonZkEVMDeployer(
         signature,
     });
 
-    const totalEther = gasLimit * gasPrice; // 0.1 ether
+    // const totalEther = gasLimit * gasPrice; // 0.1 ether
+    const totalEther = ethers.parseEther("0.1"); // 0.1 ether
     const signerProvider = signer.provider as HardhatEthersProvider;
     // Check if it's already deployed
     const zkEVMDeployerAddress = ethers.getCreateAddress({from: tx.from as string, nonce: tx.nonce});

@@ -200,6 +200,10 @@ const config: HardhatUserConfig = {
             chainId: 1011,
             accounts: [`0x${privateKey}`],
         },
+        localhost: {
+            url: "http://127.0.0.1:8545",
+            accounts: [`0x${process.env.PRIVATE_KEY}`],
+        },
     },
     gasReporter: {
         enabled: !!process.env.REPORT_GAS,
@@ -213,6 +217,7 @@ const config: HardhatUserConfig = {
             rsk: `${process.env.RSK_API_KEY}`,
             bscTestnet: `${process.env.BSCSCAN_API_KEY}`,
             biteigen: "biteigen",
+            local: "local",
         },
         customChains: [
             {
@@ -253,6 +258,14 @@ const config: HardhatUserConfig = {
                 urls: {
                     apiURL: "https://api-1.biteigen.xyz/api",
                     browserURL: "https://explorer-1.biteigen.xyz/",
+                },
+            },
+            {
+                network: "local",
+                chainId: 33,
+                urls: {
+                    apiURL: "http://192.168.1.49:81/api",
+                    browserURL: "http://192.168.1.49:81",
                 },
             },
         ],

@@ -42,7 +42,7 @@ const EMERGENCY_COUNCIL_ADMIN = ethers.id("EMERGENCY_COUNCIL_ADMIN");
 
 async function main() {
     console.log("Deploying 3_deployContracts in 60 seconds...");
-    await new Promise((resolve) => setTimeout(resolve, 60000));
+    // await new Promise((resolve) => setTimeout(resolve, 60000));
     // Check that there's no previous OZ deployment
     if (fs.existsSync(pathOZUpgradability)) {
         throw new Error(
@@ -155,7 +155,7 @@ async function main() {
     const PolgonZKEVMDeployerFactory = await ethers.getContractFactory("PolygonZkEVMDeployer", deployer);
     const zkEVMDeployerContract = PolgonZKEVMDeployerFactory.attach(zkEVMDeployerAddress) as PolygonZkEVMDeployer;
 
-    await new Promise((resolve) => setTimeout(resolve, 30000)); // delay 30s
+    // await new Promise((resolve) => setTimeout(resolve, 30000)); // delay 30s
     // check deployer is the owner of the deployer
     if ((await deployer.provider?.getCode(zkEVMDeployerContract.target)) === "0x") {
         throw new Error("zkEVM deployer contract is not deployed");
@@ -243,8 +243,9 @@ async function main() {
         fs.writeFileSync(pathOngoingDeploymentJson, JSON.stringify(ongoingDeployment, null, 1));
 
         // Nonce globalExitRoot: currentNonce + 1 (deploy bridge proxy) + 1(impl globalExitRoot)
-        // + 1 (deployTimelock) + 1 (transfer Ownership Admin) = +4
-        const nonceProxyGlobalExitRoot = Number(await ethers.provider.getTransactionCount(deployer.address)) + 4;
+        // +1 deploy ZkEVMNFTBridge
+        // + 1 (deployTimelock) + 1 (transfer Ownership Admin) = +5
+        const nonceProxyGlobalExitRoot = Number(await ethers.provider.getTransactionCount(deployer.address)) + 5;
         // nonceProxyRollupManager :Nonce globalExitRoot + 1 (proxy globalExitRoot) + 1 (impl rollupManager) = +2
         const nonceProxyRollupManager = nonceProxyGlobalExitRoot + 2;
 

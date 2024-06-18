@@ -3,17 +3,16 @@ import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import path from "path";
 
-/**
-  * usage: npx hardhat generateWallets
-  *
-  */
-
-
 type KeyStore = {
   name: string,
   address: string,
   keystore: string;
 }
+
+/**
+  * usage: npx hardhat generateWallets
+  *
+  */
 
 async function generateWallets(_taskArgs: {}, hre: HardhatRuntimeEnvironment) {
   if (!process.env.DEPLOYER_PRIVATE_KEY ||

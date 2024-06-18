@@ -1,0 +1,37 @@
+version: "3.3"
+services:
+  zkevm-mock-l1-network:
+    container_name: zkevm-mock-l1-network
+    # image: biteigen/rsk-zkevm-contracts:celestia
+    image: rsksmart/rskj:ARROWHEAD-6.2.0
+    # entrypoint: tail -F anything
+    environment:
+      # for rsksmart/rskj image
+      - RSKJ_SYS_PROPS=-Dlogging.stdout=INFO -Dlogging=OFF -Drpc.providers.web.http.bind_address=0.0.0.0 -Drpc.providers.web.http.port=8545 -Drpc.skipRemasc=true -Dgenesis=/var/lib/rsk/genesis.json
+      - RSKJ_OPTS=--regtest
+    # command:
+    # - "-Dlogging.stdout=INFO"
+    # - "-Dlogging=OFF"
+    # - "-Dkeyvalue.datasource=rocksdb"
+    # - "-Drpc.skipRemasc=true"
+    # - "-Drpc.modules.trace.enabled=true"
+    # - "-Drpc.modules.debug.enabled=true"
+    # - "-Drpc.providers.web.cors=*"
+    # - "-Drpc.providers.web.http.bind_address=0.0.0.0"
+    # - "-Drpc.providers.web.http.port=8545"
+    # - "-Drpc.providers.web.http.hosts.0=*"
+    # - "-Drpc.providers.web.ws.bind_address=0.0.0.0"
+    # - "-Drpc.providers.web.ws.enabled=true"
+    # - "-Drpc.providers.web.ws.port=8546"
+    # - "-cp"
+    # - "rsk.jar"
+    # - "co.rsk.Start"
+    # - "--regtest"
+
+    volumes:
+      - ./rsk-genesis.json:/var/lib/rsk/genesis.json
+
+
+    ports:
+      - 8545:8545
+      - 8546:8546

@@ -1,18 +1,12 @@
-FROM ethereum/client-go:v1.12.0
-
-RUN apk update
-RUN apk add --no-cache nginx
-
-RUN nginx -v
+FROM ethereum/client-go:v1.14.3
 
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-COPY docker/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 8545
-EXPOSE 9545
+EXPOSE 8546
 
 COPY docker/gethData /
-COPY docker/deploymentOutput /config/
+COPY docker/deploymentOutput /deploymentOutput
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
