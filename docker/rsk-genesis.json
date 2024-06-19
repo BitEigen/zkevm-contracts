@@ -50,6 +50,6 @@
   "gasLimit": "0x989680",
   "difficulty": "0x0000000001",
   "coinbase": "0x3333333333333333333333333333333333333333",
-  "minimumGasPrice": "60000000"
+  "minimumGasPrice": "0x00"
 }
 

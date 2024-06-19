@@ -110,7 +110,7 @@ async function main() {
 
     // fund sequencer account with tokens and ether if it have less than 0.1 ether.
     const balanceEther = await ethers.provider.getBalance(trustedSequencer);
-    const minEtherBalance = ethers.parseEther("0.1");
+    const minEtherBalance = ethers.parseEther("0.01");
     if (balanceEther < minEtherBalance) {
         const params = {
             to: trustedSequencer,

@@ -52,7 +52,7 @@ export async function deployPolygonZkEVMDeployer(
     });
 
     // const totalEther = gasLimit * gasPrice; // 0.1 ether
-    const totalEther = ethers.parseEther("0.1"); // 0.1 ether
+    const totalEther = ethers.parseEther("0.01"); // 0.1 ether
     const signerProvider = signer.provider as HardhatEthersProvider;
     // Check if it's already deployed
     const zkEVMDeployerAddress = ethers.getCreateAddress({from: tx.from as string, nonce: tx.nonce});

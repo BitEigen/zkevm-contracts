@@ -1,17 +1,13 @@
 import "dotenv/config";
-
 import "@nomicfoundation/hardhat-toolbox";
 import "@openzeppelin/hardhat-upgrades";
 import "hardhat-dependency-compiler";
+import "./tasks/index"
+
 import {HardhatUserConfig} from "hardhat/config";
 
-import "./tasks/index";
-
 const DEFAULT_MNEMONIC = "test test test test test test test test test test test junk";
-const privateKey = process.env.PRIVATE_KEY;
-if (!privateKey) {
-    throw new Error("private key not found");
-}
+
 /*
  * You need to export an object to set up your config
  * Go to https://hardhat.org/config/ to learn more
@@ -48,7 +44,7 @@ const config: HardhatUserConfig = {
                         enabled: true,
                         runs: 999999,
                     },
-                    evmVersion: "shanghai",
+                    evmVersion: "paris",
                 },
             },
             {
@@ -85,9 +81,9 @@ const config: HardhatUserConfig = {
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 500,
+                        runs: 99,
                     },
-                    evmVersion: "shanghai",
+                    evmVersion: "paris",
                 }, // try yul optimizer
             },
             "contracts/v2/PolygonZkEVMBridgeV2.sol": {
@@ -95,20 +91,20 @@ const config: HardhatUserConfig = {
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 999,
+                        runs: 99,
                     },
-                    evmVersion: "shanghai",
+                    evmVersion: "paris",
                 },
             },
-            "contracts/v2/newDeployments/PolygonRollupManagerNotUpgraded.sol": {
+            "contracts/lib/TokenWrapped.sol": {
                 version: "0.8.20",
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 500,
+                        runs: 9999, // must be the same as bridge, for testing porpuses
                     },
-                    evmVersion: "shanghai",
-                }, // try yul optimizer
+                    evmVersion: "paris",
+                },
             },
             "contracts/v2/mocks/PolygonRollupManagerMock.sol": {
                 version: "0.8.20",
@@ -117,7 +113,7 @@ const config: HardhatUserConfig = {
                         enabled: true,
                         runs: 10,
                     },
-                    evmVersion: "shanghai",
+                    evmVersion: "paris",
                 }, // try yul optimizer
             },
             // Should have the same optimizations than the RollupManager to verify
@@ -126,45 +122,93 @@ const config: HardhatUserConfig = {
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 500,
+                        runs: 10,
                     },
-                    evmVersion: "shanghai",
+                    evmVersion: "paris",
                 }, // try yul optimizer
             },
-            "contracts/v2/utils/ClaimCompressor.sol": {
+            "contracts/v2/newDeployments/PolygonRollupManagerNotUpgraded.sol": {
                 version: "0.8.20",
                 settings: {
                     optimizer: {
                         enabled: true,
-                        runs: 999999,
+                        runs: 10,
                     },
-                    evmVersion: "shanghai",
-                    //viaIR: true,
-                },
+                    evmVersion: "paris",
+                }, // try yul optimizer
             },
         },
     },
     networks: {
+        mainnet: {
+            url: process.env.MAINNET_PROVIDER
+                ? process.env.MAINNET_PROVIDER
+                : `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+            accounts: {
+                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
+                path: "m/44'/60'/0'/0",
+                initialIndex: 0,
+                count: 20,
+            },
+        },
+        ropsten: {
+            url: process.env.ROPSTEN_PROVIDER
+                ? process.env.ROPSTEN_PROVIDER
+                : `https://ropsten.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+            accounts: {
+                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
+                path: "m/44'/60'/0'/0",
+                initialIndex: 0,
+                count: 20,
+            },
+        },
+        goerli: {
+            url: process.env.GOERLI_PROVIDER
+                ? process.env.GOERLI_PROVIDER
+                : `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+            accounts: {
+                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
+                path: "m/44'/60'/0'/0",
+                initialIndex: 0,
+                count: 20,
+            },
+        },
+        rinkeby: {
+            url: process.env.RINKEBY_PROVIDER
+                ? process.env.RINKEBY_PROVIDER
+                : `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+            accounts: {
+                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
+                path: "m/44'/60'/0'/0",
+                initialIndex: 0,
+                count: 20,
+            },
+        },
+        localhost: {
+            url: "http://127.0.0.1:8545",
+            accounts: [`0x${process.env.PRIVATE_KEY}`],
+        },
         rsk: {
-            url: "https://rsk-rpc-1.biteigen.xyz",
-            chainId: 31,
-            accounts: [`0x${privateKey}`],
+            url: "http://127.0.0.1:8545",
+            accounts: [`0x${process.env.PRIVATE_KEY}`],
         },
         hardhat: {
             initialDate: "0",
-            allowUnlimitedContractSize: true,
+            //allowUnlimitedContractSize: true,
             initialBaseFeePerGas: 0,
-            accounts: [{
-              privateKey: `0x${privateKey}`,
-              balance: "1000000000000000000000000",
-            }],
+            accounts: {
+                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
+                path: "m/44'/60'/0'/0",
+                initialIndex: 0,
+                count: 20,
+            },
             forking: {
                 url: "https://rsk-rpc-1.biteigen.xyz",
                 blockNumber: 5236951
             }
         },
         polygonZKEVMTestnet: {
-            url: "https://rpc.cardona.zkevm-rpc.com",
+            url: "https://rpc.public.zkevm-test.net",
             accounts: {
                 mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
                 path: "m/44'/60'/0'/0",
@@ -181,31 +225,6 @@ const config: HardhatUserConfig = {
                 count: 20,
             },
         },
-        zkevmDevnet: {
-            url: "http://123:123:123:123:123",
-            accounts: {
-                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
-                path: "m/44'/60'/0'/0",
-                initialIndex: 0,
-                count: 20,
-            },
-        },
-        bscTestnet: {
-            url: "https://data-seed-prebsc-1-s1.binance.org:8545",
-            chainId: 97,
-            accounts: [`0x${privateKey}`],
-            // gasPrice: 5000000000,
-            // gasPrice: "auto",
-        },
-        biteigen: {
-            url: "https://rpc-1.biteigen.xyz",
-            chainId: 1011,
-            accounts: [`0x${privateKey}`],
-        },
-        localhost: {
-            url: "http://127.0.0.1:8545",
-            accounts: [`0x${process.env.PRIVATE_KEY}`],
-        },
     },
     gasReporter: {
         enabled: !!process.env.REPORT_GAS,
@@ -216,10 +235,8 @@ const config: HardhatUserConfig = {
         apiKey: {
             polygonZKEVMTestnet: `${process.env.ETHERSCAN_ZKEVM_API_KEY}`,
             polygonZKEVMMainnet: `${process.env.ETHERSCAN_ZKEVM_API_KEY}`,
-            rsk: `${process.env.RSK_API_KEY}`,
-            bscTestnet: `${process.env.BSCSCAN_API_KEY}`,
-            biteigen: "biteigen",
-            local: "local",
+            goerli: `${process.env.ETHERSCAN_API_KEY}`,
+            mainnet: `${process.env.ETHERSCAN_API_KEY}`,
         },
         customChains: [
             {
@@ -232,42 +249,10 @@ const config: HardhatUserConfig = {
             },
             {
                 network: "polygonZKEVMTestnet",
-                chainId: 2442,
+                chainId: 1442,
                 urls: {
-                    apiURL: "https://explorer-ui.cardona.zkevm-rpc.com/api",
-                    browserURL: "https://explorer-ui.cardona.zkevm-rpc.com",
-                },
-            },
-            {
-                network: "zkevmDevnet",
-                chainId: 123,
-                urls: {
-                    apiURL: "http://123:123:123:123:123/api",
-                    browserURL: "http://123:123:123:123:123",
-                },
-            },
-            {
-                network: "zkevmDevnet",
-                chainId: 123,
-                urls: {
-                    apiURL: "http://123:123:123:123:123/api",
-                    browserURL: "http://123:123:123:123:123",
-                },
-            },
-            {
-                network: "biteigen",
-                chainId: 1011,
-                urls: {
-                    apiURL: "https://api-1.biteigen.xyz/api",
-                    browserURL: "https://explorer-1.biteigen.xyz/",
-                },
-            },
-            {
-                network: "local",
-                chainId: 33,
-                urls: {
-                    apiURL: "http://192.168.1.49:81/api",
-                    browserURL: "http://192.168.1.49:81",
+                    apiURL: "https://api-testnet-zkevm.polygonscan.com/api",
+                    browserURL: "https://testnet-zkevm.polygonscan.com/",
                 },
             },
         ],
