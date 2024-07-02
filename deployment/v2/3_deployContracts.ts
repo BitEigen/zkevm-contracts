@@ -41,6 +41,8 @@ const EMERGENCY_COUNCIL_ROLE = ethers.id("EMERGENCY_COUNCIL_ROLE");
 const EMERGENCY_COUNCIL_ADMIN = ethers.id("EMERGENCY_COUNCIL_ADMIN");
 
 async function main() {
+    console.log("Deploying 3_deployContracts in 60 seconds...");
+    await new Promise((resolve) => setTimeout(resolve, 60000));
     // Check that there's no previous OZ deployment
     if (fs.existsSync(pathOZUpgradability)) {
         throw new Error(
@@ -58,12 +60,6 @@ async function main() {
     // Constant variables
     const networkIDMainnet = 0;
 
-    // Gas token variables are 0 in mainnet, since native token it's ether
-    const gasTokenAddressMainnet = ethers.ZeroAddress;
-    const gasTokenNetworkMainnet = 0n;
-    const attemptsDeployProxy = 20;
-    const gasTokenMetadata = "0x";
-
     /*
      * Check deploy parameters
      * Check that every necessary parameter is fullfilled
@@ -79,6 +75,7 @@ async function main() {
         "emergencyCouncilAddress",
         "zkEVMDeployerAddress",
         "polTokenAddress",
+        "wethAddress",
     ];
 
     for (const parameterName of mandatoryDeploymentParameters) {
@@ -98,7 +95,15 @@ async function main() {
         salt,
         zkEVMDeployerAddress,
         polTokenAddress,
+        wethAddress,
     } = deployParameters;
+
+    // Gas token variables are 0 in mainnet, since native token it's ether
+    const gasTokenAddressMainnet = wethAddress;
+    const gasTokenNetworkMainnet = 0n;
+    const attemptsDeployProxy = 20;
+    const gasTokenMetadata =
+        "0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000124e4f545f56414c49445f454e434f44494e47000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000124e4f545f56414c49445f454e434f44494e470000000000000000000000000000";
 
     // Load provider
     let currentProvider = ethers.provider;
@@ -150,6 +155,7 @@ async function main() {
     const PolgonZKEVMDeployerFactory = await ethers.getContractFactory("PolygonZkEVMDeployer", deployer);
     const zkEVMDeployerContract = PolgonZKEVMDeployerFactory.attach(zkEVMDeployerAddress) as PolygonZkEVMDeployer;
 
+    await new Promise((resolve) => setTimeout(resolve, 30000)); // delay 30s
     // check deployer is the owner of the deployer
     if ((await deployer.provider?.getCode(zkEVMDeployerContract.target)) === "0x") {
         throw new Error("zkEVM deployer contract is not deployed");
@@ -236,9 +242,9 @@ async function main() {
         delete ongoingDeployment.polygonRollupManagerContract;
         fs.writeFileSync(pathOngoingDeploymentJson, JSON.stringify(ongoingDeployment, null, 1));
 
-        // Nonce globalExitRoot: currentNonce + 1 (deploy bridge proxy) + 1(impl globalExitRoot)
+        // Nonce globalExitRoot: currentNonce + 1 (deploy bridge proxy) + 1 (deploy bridge nft proxy) + 1(impl globalExitRoot)
         // + 1 (deployTimelock) + 1 (transfer Ownership Admin) = +4
-        const nonceProxyGlobalExitRoot = Number(await ethers.provider.getTransactionCount(deployer.address)) + 4;
+        const nonceProxyGlobalExitRoot = Number(await ethers.provider.getTransactionCount(deployer.address)) + 5;
         // nonceProxyRollupManager :Nonce globalExitRoot + 1 (proxy globalExitRoot) + 1 (impl rollupManager) = +2
         const nonceProxyRollupManager = nonceProxyGlobalExitRoot + 2;
 
@@ -273,7 +279,7 @@ async function main() {
     console.log("\n#######################");
     console.log("#####  Checks TimelockContract  #####");
     console.log("#######################");
-    //console.log("minDelayTimelock:", await timelockContract.getMinDelay());
+    // console.log("minDelayTimelock:", await timelockContract.getMinDelay());
     console.log("polygonZkEVM (Rollup Manager):", await timelockContract.polygonZkEVM());
 
     /*
@@ -333,6 +339,28 @@ async function main() {
     // Import OZ manifest the deployed contracts, its enough to import just the proxy, the rest are imported automatically (admin/impl)
     await upgrades.forceImport(proxyBridgeAddress, polygonZkEVMBridgeFactory, "transparent" as any);
 
+    // Deploy ZkEVMNFTBridge
+    const polygonZkEVMNFTBridgeFactory = await ethers.getContractFactory("ZkEVMNFTBridge", deployer);
+    const deployTransactionNFTBridge = (await polygonZkEVMNFTBridgeFactory.getDeployTransaction(proxyBridgeAddress))
+        .data;
+    // Mandatory to override the gasLimit since the estimation with create are mess up D:
+    const [nftBridgeAddress, isNFTBridgeDeployed] = await create2Deployment(
+        zkEVMDeployerContract,
+        salt,
+        deployTransactionNFTBridge,
+        null,
+        deployer,
+        null
+    );
+
+    if (isNFTBridgeDeployed) {
+        console.log("#######################\n");
+        console.log("ZkEVMNFTBridge deployed to:", nftBridgeAddress);
+    } else {
+        console.log("#######################\n");
+        console.log("ZkEVMNFTBridge was already deployed to:", nftBridgeAddress);
+    }
+
     /*
      *Deployment Global exit root manager
      */
@@ -357,7 +385,7 @@ async function main() {
                 throw new Error("polygonZkEVMGlobalExitRoot contract has not been deployed");
             }
         }
-
+        // await new Promise((resolve) => setTimeout(resolve, 30000));
         expect(precalculateGlobalExitRootAddress).to.be.equal(polygonZkEVMGlobalExitRoot?.target);
 
         console.log("#######################\n");
@@ -400,6 +428,7 @@ async function main() {
     console.log("PolygonZkEVMGlobalExitRootAddress:", polygonZkEVMGlobalExitRoot?.target);
     console.log("polTokenAddress:", polTokenAddress);
     console.log("polygonZkEVMBridgeContract:", polygonZkEVMBridgeContract.target);
+    console.log("polygonZkEVMNFTBridgeContract:", nftBridgeAddress);
 
     console.log("trustedAggregator:", trustedAggregator);
     console.log("pendingStateTimeout:", pendingStateTimeout);
@@ -542,6 +571,7 @@ async function main() {
         trustedAggregator,
         proxyAdminAddress,
         salt,
+        nftBridgeAddress,
     };
     fs.writeFileSync(pathOutputJson, JSON.stringify(outputJson, null, 1));
 

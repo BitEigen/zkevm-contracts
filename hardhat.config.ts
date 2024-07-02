@@ -1,12 +1,17 @@
 import "dotenv/config";
+
 import "@nomicfoundation/hardhat-toolbox";
 import "@openzeppelin/hardhat-upgrades";
 import "hardhat-dependency-compiler";
-
 import {HardhatUserConfig} from "hardhat/config";
 
-const DEFAULT_MNEMONIC = "test test test test test test test test test test test junk";
+import "./tasks/index";
 
+const DEFAULT_MNEMONIC = "test test test test test test test test test test test junk";
+const privateKey = process.env.PRIVATE_KEY;
+if (!privateKey) {
+    throw new Error("private key not found");
+}
 /*
  * You need to export an object to set up your config
  * Go to https://hardhat.org/config/ to learn more
@@ -140,69 +145,10 @@ const config: HardhatUserConfig = {
         },
     },
     networks: {
-        mainnet: {
-            url: process.env.MAINNET_PROVIDER
-                ? process.env.MAINNET_PROVIDER
-                : `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-            accounts: {
-                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
-                path: "m/44'/60'/0'/0",
-                initialIndex: 0,
-                count: 20,
-            },
-        },
-        ropsten: {
-            url: process.env.ROPSTEN_PROVIDER
-                ? process.env.ROPSTEN_PROVIDER
-                : `https://ropsten.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-            accounts: {
-                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
-                path: "m/44'/60'/0'/0",
-                initialIndex: 0,
-                count: 20,
-            },
-        },
-        goerli: {
-            url: process.env.GOERLI_PROVIDER
-                ? process.env.GOERLI_PROVIDER
-                : `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-            accounts: {
-                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
-                path: "m/44'/60'/0'/0",
-                initialIndex: 0,
-                count: 20,
-            },
-        },
-        rinkeby: {
-            url: process.env.RINKEBY_PROVIDER
-                ? process.env.RINKEBY_PROVIDER
-                : `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-            accounts: {
-                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
-                path: "m/44'/60'/0'/0",
-                initialIndex: 0,
-                count: 20,
-            },
-        },
-        sepolia: {
-            url: process.env.SEPOLIA_PROVIDER
-                ? process.env.SEPOLIA_PROVIDER
-                : `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-            accounts: {
-                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
-                path: "m/44'/60'/0'/0",
-                initialIndex: 0,
-                count: 20,
-            },
-        },
-        localhost: {
-            url: "http://127.0.0.1:8545",
-            accounts: {
-                mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
-                path: "m/44'/60'/0'/0",
-                initialIndex: 0,
-                count: 20,
-            },
+        rsk: {
+            url: "https://public-node.testnet.rsk.co",
+            chainId: 31,
+            accounts: [`0x${privateKey}`],
         },
         hardhat: {
             initialDate: "0",
@@ -214,6 +160,10 @@ const config: HardhatUserConfig = {
                 initialIndex: 0,
                 count: 20,
             },
+        },
+        fork: {
+            url: "http://127.0.0.1:8545",
+            accounts: [`0x${privateKey}`],
         },
         polygonZKEVMTestnet: {
             url: "https://rpc.cardona.zkevm-rpc.com",
@@ -242,6 +192,16 @@ const config: HardhatUserConfig = {
                 count: 20,
             },
         },
+        bscTestnet: {
+            url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+            chainId: 97,
+            accounts: [`0x${privateKey}`],
+        },
+        biteigen: {
+            url: "https://rpc-testnet.biteigen.xyz",
+            chainId: 1022,
+            accounts: [`0x${privateKey}`],
+        },
     },
     gasReporter: {
         enabled: !!process.env.REPORT_GAS,
@@ -252,10 +212,9 @@ const config: HardhatUserConfig = {
         apiKey: {
             polygonZKEVMTestnet: `${process.env.ETHERSCAN_ZKEVM_API_KEY}`,
             polygonZKEVMMainnet: `${process.env.ETHERSCAN_ZKEVM_API_KEY}`,
-            goerli: `${process.env.ETHERSCAN_API_KEY}`,
-            sepolia: `${process.env.ETHERSCAN_API_KEY}`,
-            mainnet: `${process.env.ETHERSCAN_API_KEY}`,
-            zkevmDevnet: `${process.env.ETHERSCAN_API_KEY}`,
+            rsk: `${process.env.RSK_API_KEY}`,
+            bscTestnet: `${process.env.BSCSCAN_API_KEY}`,
+            biteigen: "biteigen",
         },
         customChains: [
             {
@@ -280,6 +239,30 @@ const config: HardhatUserConfig = {
                 urls: {
                     apiURL: "http://123:123:123:123:123/api",
                     browserURL: "http://123:123:123:123:123",
+                },
+            },
+            {
+                network: "zkevmDevnet",
+                chainId: 123,
+                urls: {
+                    apiURL: "http://123:123:123:123:123/api",
+                    browserURL: "http://123:123:123:123:123",
+                },
+            },
+            {
+                network: "biteigen",
+                chainId: 1022,
+                urls: {
+                    apiURL: "https://api-testnet.biteigen.xyz/api",
+                    browserURL: "https://explorer-testnet.biteigen.xyz/",
+                },
+            },
+            {
+                network: "rsk",
+                chainId: 31,
+                urls: {
+                    apiURL: "https://rootstock-testnet.blockscout.com/api",
+                    browserURL: "https://rootstock-testnet.blockscout.com/",
                 },
             },
         ],

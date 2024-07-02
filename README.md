@@ -1,84 +1,145 @@
-# zkevm-contracts
+# Deploy docs
 
-Smart contract implementation which will be used by the polygon zkevm
-
-[![Main CI](https://github.com/0xPolygonHermez/zkevm-contracts/actions/workflows/main.yml/badge.svg)](https://github.com/0xPolygonHermez/zkevm-contracts/actions/workflows/main.yml)
-
-## Mainnet Contracts:
-
-| Contract Name                | Address                                                                                                               |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| PolygonRollupManager         | [0x5132A183E9F3CB7C848b0AAC5Ae0c4f0491B7aB2](https://etherscan.io/address/0x5132A183E9F3CB7C848b0AAC5Ae0c4f0491B7aB2) |
-| PolygonZkEVMBridgeV2         | [0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe](https://etherscan.io/address/0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe) |
-| PolygonZkEVMGlobalExitRootV2 | [0x580bda1e7A0CFAe92Fa7F6c20A3794F169CE3CFb](https://etherscan.io/address/0x580bda1e7A0CFAe92Fa7F6c20A3794F169CE3CFb) |
-| FflonkVerifier               | [0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9](https://etherscan.io/address/0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9) |
-| PolygonZkEVMDeployer         | [0xCB19eDdE626906eB1EE52357a27F62dd519608C2](https://etherscan.io/address/0xCB19eDdE626906eB1EE52357a27F62dd519608C2) |
-| PolygonZkEVMTimelock         | [0xEf1462451C30Ea7aD8555386226059Fe837CA4EF](https://etherscan.io/address/0xEf1462451C30Ea7aD8555386226059Fe837CA4EF) |
-
-## zkEVM Contracts:
-
-| Contract Name        | Address                                                                                                                        |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| PolygonZkEVMBridgeV2 | [0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe](https://zkevm.polygonscan.com/address/0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe) |
-| PolygonZkEVMTimelock | [0xBBa0935Fa93Eb23de7990b47F0D96a8f75766d13](https://zkevm.polygonscan.com/address/0xBBa0935Fa93Eb23de7990b47F0D96a8f75766d13) |
-
-## Requirements
-
--   node version: 16.x
--   npm version: 7.x
-
-## Install repo
-
-```
+## Clone project
+```sh
+git clone -b feat/rsk git@github.com:BitEigen/zkEVM-contracts-dev.git
+cd zkEVM-contracts
+cp .env.example .env
 npm i
 ```
+Note: update .env
 
-## Run tests
-
+## Deploy contracts
+1. Tạo ví
+```sh
+npx hardhat generateWallets
 ```
-npm run test
+Faucet cho ví: https://faucet.rootstock.io/ 
+
+2. Setup rsk node
+
+    2.1 Setup testnet
+    ```sh
+    git clone https://github.com/BitEigen/rskj
+    cd rskj
+    ./configure
+    ./gradlew :rskj-core:run --args="--testnet"
+    ```
+
+    2.2 Setup local node để test smart contract (optional)
+
+    https://dev.rootstock.io/kb/geth-attach-local-node/
+
+3. Tạo deploy params
+```sh
+npx hardhat createDeployParamTask --chainid 1011
+```
+Trong đó chainid sẽ là chainId của chain sắp dựng
+
+4. Deploy contracts
+```sh
+npm run deploy:testnet:v2:rsk
+```
+Note:
+
+* Có thể bỏ qua bước 2_deployPolygonZKEVMDeployer nếu như đã deploy Pol Token và zkEVMDeployerContract
+* Trong quá trình deploy có thể gặp lỗi:
+    ```sh
+    zkEVMDeployerContract:  0xD1d7A8B2C71A55B33c6556b56d17B71FAA7f0C59
+    Error: zkEVM deployer contract is not deployed
+    ```
+
+    Lỗi này do network lag => đợi cho contract hiển thị trên explorer rồi chạy tiếp bước `3_deployContracts` và `4_createRollup` như trong script.
+
+
+5. Verify contracts (optional vì hầu hết contract đã được verify trên rootstock testnet rồi)
+```sh
+npm run verify:v2:rsk
 ```
 
-## Deploy on hardhat
-
-```
-npm run deploy:ZkEVM:hardhat
-```
-
-## Build dockers
-
-```
-npm run docker:contracts
+6. Update config
+```sh
+npx hardhat updateConfigTask --network rsk --rpc http://192.168.1.71:4444 --wsrpc ws://192.168.1.71:4446
 ```
 
-Or if using new docker-compose version
+7. Setup Polygon Data Committee
 
+```sh
+npx hardhat setCommitteeTask --network <network> --numofsig 1 --urls "http://url1,http://url2" --addrs "0xAddr1,0xAddr"
+# Eg: npx hardhat setCommitteeTask --numofsig 1 --network rsk --urls "https://data-availability-1.biteigen.xyz" --addrs "0x8af3d8b398d43bed74b717ae3eaf11f4c44bb80e"
 ```
-npm run dockerv2:contracts
+
+## Run nodes
+1. Dựng nodes bằng docker
+```sh
+git clone https://github.com/BitEigen/zkValidium-quickstart
+```
+Copy folder config từ bên deploy smart contract ghi đè sang folder config của bên zkValidium-quickstart 
+
+```sh
+make run
 ```
 
-A new docker `hermeznetwork/geth-zkevm-contracts` will be created
-This docker will contain a geth node with the deployed contracts
-The deployment output can be found in: `docker/deploymentOutput/deploy_output.json`
-To run the docker you can use: `docker run -p 8545:8545 hermeznetwork/geth-zkevm-contracts`
+Custom lại docker-compose.yml cho phù hợp nhu cầu!
 
-## Note
+2. Dựng nodes từ source code
+    Tài liệu tham khảo thêm: 
 
-In order to test, the following private keys are being used. These keys are not meant to be used in any production environment:
+    https://github.com/0xPolygon/polygon-docs/blob/b9d8175150d24046b050cb8044cf4f4b26854176/docs/cdk/get-started/deploy-validium/node/run-node-services.md
 
--   private key: `0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`
-    -   address:`0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266`
--   private key: `0xdfd01798f92667dbf91df722434e8fbe96af0211d4d1b82bbbbc8f1def7a814f`
-    -   address:`0xc949254d682d8c9ad5682521675b8f43b102aec4`
+    2.1 Dựng node zk-prover
 
-# Verify Deployed Smart Contracts
+    Do zk-prover ở môi trường test chỉ là mock nên có thể tham khảo luôn cách dựng bên docker
 
-To verify that the smartcontracts of this repository are the same deployed on mainnet, you could follow the instructions described [document](verifyMainnetDeployment/verifyDeployment.md)
+    2.2 Dựng nodes
+    
+    Build
 
-The smartcontract used to verify a proof, it's a generated contract from zkEVM Rom and Pil (constraints). To verify the deployment of this smartcontract you could follow the instructions described in this [document](verifyMainnetDeployment/verifyMainnetProofVerifier.md)
+    ```sh
+    git clone https://github.com/0xPolygon/cdk-validium-node.git 
+    git checkout tags/v0.6.4+cdk.2
 
-## Activate github hook
+    git clone https://github.com/0xPolygon/cdk-data-availability.git
+    git checkout tags/v0.07
 
-```
-git config --local core.hooksPath .githooks/
-```
+
+    git clone https://github.com/0xPolygonHermez/zkevm-bridge-service.git
+    git checkout tags/v0.4.2
+    ```
+
+    Dựng các service nodes
+    Note: các file network + config ở dưới đây có trong folder config ở bên smart contract
+
+    ```sh
+    cd cdk-validium-node
+    ./dist/zkevm-node run --network custom --custom-network-file /tmp/cdk/genesis.json --cfg /tmp/cdk/node-config.toml \
+    	--components sequencer \
+    	--components sequence-sender \
+    	--components aggregator \
+    	--components rpc --http.api eth,net,debug,zkevm,txpool,web3 \
+    	--components synchronizer \
+    	--components eth-tx-manager \
+    	--components l2gaspricer
+    ```
+    Approve pol token:
+    ```sh
+    cd cdk-validium-node
+    ./dist/zkevm-node approve --network custom \
+    	--custom-network-file /tmp/cdk/genesis.json \
+    	--cfg /tmp/cdk/node-config.toml \
+    	--amount 1000000000000000000000000000 \
+    	--password "testonly" --yes --key-store-path /tmp/cdk/account.key
+    ```
+
+    DAC:
+    ```sh
+    cd cdk-data-availability
+    ./dist/cdk-data-availability run --cfg /tmp/cdk/dac-config.toml
+    ```
+
+    Bridge service:
+    ```sh
+    cd zkevm-bridge-service
+    ./dist/zkevm-bridge run --cfg /tmp/cdk/bridge-config.toml
+    ```
+

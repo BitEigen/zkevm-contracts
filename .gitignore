@@ -12,13 +12,16 @@ artifacts/
 docs/interfaces
 docs/mocks
 .vscode/launch.json
-deploy_output.json
-deploy_parameters.json
 deployments
 upgrade_parameters.json
 docker/gethData/
 *.ignore/
 typechain-types/
-create_rollup_parameters.json
 
 docker/deploymentOutput
+docker/rsk/
+config/wallets.json
+deployment/v2/create_rollup_parameters.json
+deployment/v2/deploy_parameters.json
+*.keystore
+debug.ts

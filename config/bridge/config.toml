@@ -1,0 +1,56 @@
+[Log]
+Level = "debug"
+Outputs = ["stdout"]
+
+[SyncDB]
+Database = "postgres"
+User = "test_user"
+Password = "test_password"
+Name = "test_db"
+Host = "zkevm-bridge-db"
+Port = "5432"
+MaxConns = 20
+
+[ClaimTxManager]
+Enabled = true
+FrequencyToMonitorTxs = "10s"
+PrivateKey = {Path = "/pk/keystore.claimtxmanager", Password = "testonly"}
+RetryInterval = "30s"
+RetryNumber = 10
+AuthorizedClaimMessageAddresses = ["0xbcD987Ebd539E90Da7650823fbA2B6E5F635172D"]
+
+[Etherman]
+L1URL = "https://rsk-rpc-1.biteigen.xyz"
+L2URLs = ["http://zkevm-json-rpc:8123"]
+
+[Synchronizer]
+SyncInterval = "10s"
+SyncChunkSize = 10000
+
+[BridgeController]
+Store = "postgres"
+Height = 32
+
+[BridgeServer]
+GRPCPort = "9090"
+HTTPPort = "8080"
+CacheSize = 100000
+DefaultPageLimit = 25
+MaxPageLimit = 100
+BridgeVersion = "v1"
+    [BridgeServer.DB]
+    Database = "postgres"
+    User = "test_user"
+    Password = "test_password"
+    Name = "test_db"
+    Host = "zkevm-bridge-db"
+    Port = "5432"
+    MaxConns = 20
+
+[NetworkConfig]
+GenBlockNumber = 5284644
+PolygonBridgeAddress = "0xB4E6d827fB6AFCC5D77F1F39264b80cE78999bcC"
+PolygonZkEVMGlobalExitRootAddress = "0x3eDD3955Fcb8709a96FeD44FeEB3dFC8De81E44d"
+PolygonRollupManagerAddress = "0xfc93B05b1d4FDF640A6db5Bd869F8111d8685364"
+PolygonZkEvmAddress = "0xB03466839321dc06cCa69D602e89ea95f5340B68"
+L2PolygonBridgeAddresses = ["0xAe281AC0bf1f6655C14D895Cf1e5cc66473e7a36"]

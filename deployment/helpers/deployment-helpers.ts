@@ -1,26 +1,9 @@
 /* eslint-disable no-await-in-loop, no-use-before-define, no-lonely-if, import/no-dynamic-require */
 /* eslint-disable no-console, no-inner-declarations, no-undef, import/no-unresolved */
+import {HardhatEthersSigner} from "@nomicfoundation/hardhat-ethers/signers";
 import {expect} from "chai";
 import {ethers} from "hardhat";
-
-const gasPriceKeylessDeployment = "100"; // 100 gweis
-// type Signer = ethers.types.Signer;
-import {Signer} from "ethers";
-import {HardhatEthersSigner} from "@nomicfoundation/hardhat-ethers/signers";
-import {HardhatEthersProvider} from "@nomicfoundation/hardhat-ethers/internal/hardhat-ethers-provider";
-
-import {
-    VerifierRollupHelperMock,
-    ERC20PermitMock,
-    PolygonRollupManagerMock,
-    PolygonZkEVMGlobalExitRoot,
-    PolygonZkEVMBridgeV2,
-    TokenWrapped,
-    Address,
-    PolygonZkEVM,
-    PolygonZkEVMDeployer,
-} from "../../typechain-types";
-import {string} from "yargs";
+import {PolygonZkEVMDeployer} from "../../typechain-types";
 
 export async function deployPolygonZkEVMDeployer(
     deployerAddress: string,
@@ -28,53 +11,17 @@ export async function deployPolygonZkEVMDeployer(
 ): Promise<[PolygonZkEVMDeployer, string]> {
     const PolgonZKEVMDeployerFactory = await ethers.getContractFactory("PolygonZkEVMDeployer", signer);
 
-    const deployTxZKEVMDeployer = (await PolgonZKEVMDeployerFactory.getDeployTransaction(deployerAddress)).data;
+    const contract = await PolgonZKEVMDeployerFactory.deploy(signer.address);
+    await contract.waitForDeployment();
 
-    const gasLimit = BigInt(1000000); // Put 1 Million, aprox 650k are necessary
-    const gasPrice = BigInt(ethers.parseUnits(gasPriceKeylessDeployment, "gwei"));
-
-    const signature = {
-        v: 27,
-        r: "0x5ca1ab1e0", // Equals 0x00000000000000000000000000000000000000000000000000000005ca1ab1e0
-        s: "0x5ca1ab1e", // Equals 0x000000000000000000000000000000000000000000000000000000005ca1ab1e
-    };
-    const tx = ethers.Transaction.from({
-        to: null, // bc deployment transaction, "to" is "0x"
-        nonce: 0,
-        value: 0,
-        gasLimit: gasLimit,
-        gasPrice: gasPrice,
-        data: deployTxZKEVMDeployer,
-        type: 0, // legacy transaction
-        signature,
-    });
-
-    const totalEther = gasLimit * gasPrice; // 0.1 ether
-    const signerProvider = signer.provider as HardhatEthersProvider;
-    // Check if it's already deployed
-    const zkEVMDeployerAddress = ethers.getCreateAddress({from: tx.from as string, nonce: tx.nonce});
-    if ((await signerProvider.getCode(zkEVMDeployerAddress)) !== "0x") {
-        const zkEVMDeployerContract = PolgonZKEVMDeployerFactory.attach(zkEVMDeployerAddress) as PolygonZkEVMDeployer;
-        expect(await zkEVMDeployerContract.owner()).to.be.equal(signer.address);
-        return [zkEVMDeployerContract, ethers.ZeroAddress];
-    }
-
-    // Fund keyless deployment
-    const params = {
-        to: tx.from,
-        value: totalEther,
-    };
-    await (await signer.sendTransaction(params)).wait();
-
-    // Deploy zkEVMDeployer
-
-    await (await signerProvider.broadcastTransaction(tx.serialized)).wait();
+    const zkEVMDeployerAddress = await contract.getAddress();
 
     const zkEVMDeployerContract = (await PolgonZKEVMDeployerFactory.attach(
         zkEVMDeployerAddress
     )) as PolygonZkEVMDeployer;
     expect(await zkEVMDeployerContract.owner()).to.be.equal(deployerAddress);
-    return [zkEVMDeployerContract, tx.from as string];
+
+    return [zkEVMDeployerContract, ethers.ZeroAddress];
 }
 
 export async function create2Deployment(
